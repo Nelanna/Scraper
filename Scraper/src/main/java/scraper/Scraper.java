@@ -22,14 +22,16 @@ public class Scraper {
 			doc = Jsoup.connect("https://www.wowprogress.com/gearscore/us/?lfg=1&raids_week=2&lang=en&sortby=ts").get();
 			Element table = doc.select("table").get(0);
 			Elements rows = table.select("tr");
-		
+			progressPercentage(0, 6);
 			parseTable(rows);
+			progressPercentage(1, 6);
 			for (int i=0;i<5;i++)
 			{
 				doc = Jsoup.connect("https://www.wowprogress.com/gearscore/us/char_rating/next/"+ i + "/lfg.1/raids_week.2/lang.en/sortby.ts#char_rating").get();
 				Element tableNext = doc.select("table").get(0);
 				Elements rowsNext = tableNext.select("tr");
 				parseTable(rowsNext);
+				progressPercentage(i + 2, 6);
 			}
 			System.out.println("Gathering Data Complete....");
 			System.out.println("Begin Excel Dump.....");
@@ -129,5 +131,27 @@ public class Scraper {
 			players.add(player);
 			i++;	
 		}
+	}
+	
+	public static void progressPercentage(int remain, int total) 
+	{
+	    if (remain > total) {
+	        throw new IllegalArgumentException();
+	    }
+	    int maxBareSize = 10; // 10unit for 100%
+	    int remainProcent = ((100 * remain) / total) / maxBareSize;
+	    char defaultChar = '-';
+	    String icon = "*";
+	    String bare = new String(new char[maxBareSize]).replace('\0', defaultChar) + "]";
+	    StringBuilder bareDone = new StringBuilder();
+	    bareDone.append("[");
+	    for (int i = 0; i < remainProcent; i++) {
+	        bareDone.append(icon);
+	    }
+	    String bareRemain = bare.substring(remainProcent, bare.length());
+	    System.out.print("\r" + bareDone + bareRemain + " " + remainProcent * 10 + "%");
+	    if (remain == total) {
+	        System.out.print("\n");
+	    }
 	}
 }
