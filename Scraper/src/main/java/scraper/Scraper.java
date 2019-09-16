@@ -60,13 +60,20 @@ public class Scraper {
 			playerNumber++;
 			Document individualPage = new Document("nothing");
 			Document WarcraftLogsPage = new Document("nothing2");
-			String serverWithoutCharacters;
+			
+			//Since no two websites handle server names the same need to do some manip of server name for additional urls
+			String serverNameForRaiderIO;
+			serverNameForRaiderIO = row.select("td").get(3).text();
+			serverNameForRaiderIO = serverNameForRaiderIO.replace("'", "");
+			serverNameForRaiderIO = serverNameForRaiderIO.replace(" ", "-");
+			 
+			String serverNameForWowprogressPage;
+			serverNameForWowprogressPage = row.select("td").get(3).text();
+			serverNameForWowprogressPage = serverNameForWowprogressPage.replace("'", "-");
+			serverNameForWowprogressPage = serverNameForWowprogressPage.replace(" ", "-");
 			try {
-				 individualPage = Jsoup.connect("https://www.wowprogress.com/character/us/" + row.select("td").get(3).text() + "/" + row.select("td").get(0).text()).get();
-				 serverWithoutCharacters = row.select("td").get(3).text();
-				 serverWithoutCharacters = serverWithoutCharacters.replace("'", "");
-				 serverWithoutCharacters = serverWithoutCharacters.replace(" ", "-");
-				 WarcraftLogsPage = Jsoup.connect("https://www.warcraftLogs.com/character/us/" + serverWithoutCharacters + "/" + row.select("td").get(0).text()).get();
+				 individualPage = Jsoup.connect("https://www.wowprogress.com/character/us/" + serverNameForWowprogressPage + "/" + row.select("td").get(0).text()).get();
+				 WarcraftLogsPage = Jsoup.connect("https://www.warcraftLogs.com/character/us/" + serverNameForRaiderIO + "/" + row.select("td").get(0).text()).get();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
