@@ -71,6 +71,12 @@ public class Scraper {
 			serverNameForWowprogressPage = row.select("td").get(3).text();
 			serverNameForWowprogressPage = serverNameForWowprogressPage.replace("'", "-");
 			serverNameForWowprogressPage = serverNameForWowprogressPage.replace(" ", "-");
+			
+			String serverNameForArmory;
+			serverNameForArmory = row.select("td").get(3).text();
+			serverNameForArmory = serverNameForArmory.replace("'", "");
+			serverNameForArmory = serverNameForArmory.replace(" ", "-");
+			
 			try {
 				 individualPage = Jsoup.connect("https://www.wowprogress.com/character/us/" + serverNameForWowprogressPage + "/" + row.select("td").get(0).text()).get();
 				 WarcraftLogsPage = Jsoup.connect("https://www.warcraftLogs.com/character/us/" + serverNameForRaiderIO + "/" + row.select("td").get(0).text()).get();
@@ -113,10 +119,10 @@ public class Scraper {
 				player.setEpProgress("Failed to Parse");
 			}
 			
-			player.setWarcraftLogsLink("https://www.warcraftlogs.com/character/us/" + player.getServer() + "/" + player.getName());
-			player.setArmoryLink("https://www.worldofwarcraft.com/en-us/character/us/" + player.getServer() + "/" + player.getName());
-			player.setRaiderIOLink("www.raider.io/characters/us/" + player.getServer() + "/" + player.getName());
-			player.setWowprogressLink("https://www.wowprogress.com/character/us/" + player.getServer() + "/" + player.getName());
+			player.setWarcraftLogsLink("https://www.warcraftlogs.com/character/us/" + serverNameForRaiderIO + "/" + player.getName());
+			player.setArmoryLink("https://www.worldofwarcraft.com/en-us/character/us/" + serverNameForArmory + "/" + player.getName());
+			player.setRaiderIOLink("www.raider.io/characters/us/" + serverNameForRaiderIO + "/" + player.getName());
+			player.setWowprogressLink("https://www.wowprogress.com/character/us/" + serverNameForWowprogressPage + "/" + player.getName());
 			player.setWowprogressMessage(individualPage.select(".charCommentary").text());
 			
 			
